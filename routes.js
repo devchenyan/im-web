@@ -1,14 +1,16 @@
 import React from 'react'
 import { Route } from 'react-router'
 import App from './containers/App'
-import UserPage from './containers/UserPage'
-import RepoPage from './containers/RepoPage'
+import MessagePage from './containers/MessagePage'
+import ContectPage from './containers/ContectPage'
+import CirclePage from './containers/CirclePage'
+import MePage from './containers/MePage'
 
 export default (
   <Route path="/" component={App}>
-    <Route path="/:login/:name"
-           component={RepoPage} />
-    <Route path="/:login"
-           component={UserPage} />
+    <Route path="message" component={MessagePage} />
+    <Route path="contect" component={ContectPage} />
+    <Route path="circle" component={CirclePage} />
+    <Route path="me" component={MePage} />
   </Route>
 )
