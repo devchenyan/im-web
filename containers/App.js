@@ -1,56 +1,35 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { browserHistory } from 'react-router'
-import Explore from '../components/Explore'
-import { resetErrorMessage } from '../actions'
+// import { browserHistory } from 'react-router'
+import Navbar from '../components/Navbar'
+import Tabbar from '../components/Tabbar'
+import { changeNavItem } from '../actions'
+import { bindActionCreators } from 'redux'
 
 class App extends Component {
   constructor(props) {
     super(props)
-    this.handleChange = this.handleChange.bind(this)
-    this.handleDismissClick = this.handleDismissClick.bind(this)
+    this.handleChangeClick = this.handleChangeClick.bind(this)
   }
 
-  handleDismissClick(e) {
-    this.props.resetErrorMessage()
-    e.preventDefault()
-  }
-
-  handleChange(nextValue) {
-    browserHistory.push(`/${nextValue}`)
-  }
-
-  renderErrorMessage() {
-    const { errorMessage } = this.props
-    if (!errorMessage) {
-      return null
-    }
-
-    return (
-      <p style={{ backgroundColor: '#e99', padding: 10 }}>
-        <b>{errorMessage}</b>
-        {' '}
-        (<a href="#"
-            onClick={this.handleDismissClick}>
-          Dismiss
-        </a>)
-      </p>
-    )
+  handleChangeClick() {
+    this.props.changeNavItem('朋友圈')
   }
 
   render() {
-    const { children, inputValue } = this.props
+    const { children, navItem } = this.props
     return (
       <div>
+        <Navbar navItem= {navItem}></Navbar>
         <ul className="nav nav-tabs" >
           <li role="presentation" className="active"><a href="#">Home</a></li>
           <li role="presentation"><a href="#">Profile</a></li>
           <li role="presentation"><a href="#">Messages</a></li>
         </ul>
-        <Explore value={inputValue}
-                 onChange={this.handleChange} />
-        <hr />
-        {this.renderErrorMessage()}
+
+        <Tabbar></Tabbar>
+
+        <button onClick={this.handleChangeClick}>改变nav</button>
         {children}
       </div>
     )
@@ -59,20 +38,23 @@ class App extends Component {
 
 App.propTypes = {
   // Injected by React Redux
-  errorMessage: PropTypes.string,
-  resetErrorMessage: PropTypes.func.isRequired,
-  inputValue: PropTypes.string.isRequired,
+  navItem: PropTypes.object,
+  changeNavItem: PropTypes.func.isRequired,
   // Injected by React Router
   children: PropTypes.node
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   return {
-    errorMessage: state.errorMessage,
-    inputValue: ownProps.location.pathname.substring(1)
+    navItem: state.navItem,
   }
 }
 
-export default connect(mapStateToProps, {
-  resetErrorMessage
-})(App)
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ changeNavItem }, dispatch);
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)
